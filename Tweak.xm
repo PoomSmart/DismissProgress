@@ -1,16 +1,5 @@
 #import <notify.h>
-
-@interface Cydia : UIApplication
-- (void)returnToCydia;
-@end
-
-@interface CydiaProgressData : NSObject
-- (id)running;
-@end
-
-@interface ProgressController : UIViewController
-- (UIBarButtonItem *)rightButton;
-@end
+#import "../CydiaHeader.h"
 
 static inline NSString *UCLocalizeEx(NSString *key, NSString *value = nil)
 {
