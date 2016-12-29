@@ -1,11 +1,8 @@
+#import "../PS.h"
 #import <notify.h>
-#import "../CydiaHeader.h"
-
-static inline NSString *UCLocalizeEx(NSString *key, NSString *value = nil)
-{
-	return [[NSBundle mainBundle] localizedStringForKey:key value:value table:nil];
-}
-#define UCLocalize(key) UCLocalizeEx(@ key)
+#import <Cydia/Cydia-Class.h>
+#import <Cydia/CydiaProgressData.h>
+#import <Cydia/ProgressController.h>
 
 static inline void _UpdateExternalStatus(uint64_t newStatus)
 {
