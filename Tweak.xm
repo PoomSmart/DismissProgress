@@ -1,11 +1,27 @@
-#import "../PS.h"
 #import <notify.h>
-#import <Cydia/Cydia-Class.h>
-#import <Cydia/CydiaProgressData.h>
-#import <Cydia/ProgressController.h>
 
-static inline void _UpdateExternalStatus(uint64_t newStatus)
-{
+@interface UINavigationController (Cydia)
+- (UIViewController *)parentOrPresentingViewController;
+@end
+
+@interface Cydia : UIApplication
+- (void)returnToCydia;
+@end
+
+@interface CydiaProgressData : NSObject
+- (id)running;
+@end
+
+@interface ProgressController : UIViewController
+- (UIBarButtonItem *)rightButton;
+@end
+
+static inline NSString *UCLocalizeEx(NSString *key, NSString *value = nil) {
+    return [[NSBundle mainBundle] localizedStringForKey:key value:value table:nil];
+}
+#define UCLocalize(key) UCLocalizeEx(@ key)
+
+static inline void _UpdateExternalStatus(uint64_t newStatus) {
 	int notify_token;
 	if (notify_register_check("com.saurik.Cydia.status", &notify_token) == NOTIFY_STATUS_OK) {
 		notify_set_state(notify_token, newStatus);
@@ -18,8 +34,7 @@ CydiaProgressData *cpd;
 
 %hook CydiaProgressData
 
-- (id)init
-{
+- (id)init {
 	self = %orig;
 	cpd = self;
 	return self;
@@ -30,15 +45,13 @@ CydiaProgressData *cpd;
 %hook ProgressController
 
 %new
-- (void)dp_close
-{
+- (void)dp_close {
 	_UpdateExternalStatus(0);
 	[(Cydia *)[UIApplication sharedApplication] returnToCydia];
 	[[[self navigationController] parentOrPresentingViewController] dismissModalViewControllerAnimated:YES];
 }
 
-- (UIBarButtonItem *)rightButton
-{
+- (UIBarButtonItem *)rightButton {
     return ![[cpd running] boolValue] ? [[[UIBarButtonItem alloc]
         initWithTitle:UCLocalize("CLOSE")
         style:UIBarButtonItemStylePlain
@@ -47,8 +60,7 @@ CydiaProgressData *cpd;
     ] autorelease] : %orig;
 }
 
-- (void)applyRightButton
-{
+- (void)applyRightButton {
 	[[self navigationItem] setRightBarButtonItem:![[cpd running] boolValue] ? [self rightButton] : nil];
 }
 
