@@ -1,6 +1,2 @@
-.
-theos
-_
+.DS_Store
 .theos
-*.deb
-obj
