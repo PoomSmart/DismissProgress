@@ -48,7 +48,7 @@ CydiaProgressData *cpd;
 - (void)dp_close {
 	_UpdateExternalStatus(0);
 	[(Cydia *)[UIApplication sharedApplication] returnToCydia];
-	[[[self navigationController] parentOrPresentingViewController] dismissModalViewControllerAnimated:YES];
+	[[[self navigationController] parentOrPresentingViewController] dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (UIBarButtonItem *)rightButton {
