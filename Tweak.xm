@@ -5,6 +5,7 @@
 @end
 
 @interface Cydia : UIApplication
+- (void)cancelAndClear:(bool)clear;
 - (void)returnToCydia;
 @end
 
@@ -21,7 +22,7 @@ static inline NSString *UCLocalizeEx(NSString *key, NSString *value = nil) {
 }
 #define UCLocalize(key) UCLocalizeEx(@ key)
 
-static inline void _UpdateExternalStatus(uint64_t newStatus) {
+static inline void UpdateExternalStatus(uint64_t newStatus) {
 	int notify_token;
 	if (notify_register_check("com.saurik.Cydia.status", &notify_token) == NOTIFY_STATUS_OK) {
 		notify_set_state(notify_token, newStatus);
@@ -46,9 +47,11 @@ CydiaProgressData *cpd;
 
 %new
 - (void)dp_close {
-	_UpdateExternalStatus(0);
-	[(Cydia *)[UIApplication sharedApplication] returnToCydia];
-	[[[self navigationController] parentOrPresentingViewController] dismissViewControllerAnimated:YES completion:nil];
+	UpdateExternalStatus(0);
+	Cydia *delegate = (Cydia *)[UIApplication sharedApplication];
+	[delegate returnToCydia];
+	[delegate cancelAndClear:YES];
+	[[[self navigationController] parentOrPresentingViewController] dismissModalViewControllerAnimated:YES];
 }
 
 - (UIBarButtonItem *)rightButton {
@@ -61,7 +64,10 @@ CydiaProgressData *cpd;
 }
 
 - (void)applyRightButton {
-	[[self navigationItem] setRightBarButtonItem:![[cpd running] boolValue] ? [self rightButton] : nil];
+	if (![[cpd running] boolValue])
+		[[self navigationItem] setRightBarButtonItem:[self rightButton]];
+	else
+		%orig;
 }
 
 %end
