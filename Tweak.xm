@@ -6,6 +6,7 @@
 
 @interface Cydia : UIApplication
 - (void)cancelAndClear:(bool)clear;
+- (void)reloadData;
 - (void)returnToCydia;
 @end
 
@@ -51,7 +52,9 @@ CydiaProgressData *cpd;
 	Cydia *delegate = (Cydia *)[UIApplication sharedApplication];
 	[delegate returnToCydia];
 	[delegate cancelAndClear:YES];
-	[[[self navigationController] parentOrPresentingViewController] dismissModalViewControllerAnimated:YES];
+	[[[self navigationController] parentOrPresentingViewController] dismissViewControllerAnimated:YES completion:^(void) {
+		[delegate reloadData];
+	}];
 }
 
 - (UIBarButtonItem *)rightButton {
