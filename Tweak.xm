@@ -24,12 +24,12 @@ static inline NSString *UCLocalizeEx(NSString *key, NSString *value = nil) {
 #define UCLocalize(key) UCLocalizeEx(@ key)
 
 static inline void UpdateExternalStatus(uint64_t newStatus) {
-	int notify_token;
-	if (notify_register_check("com.saurik.Cydia.status", &notify_token) == NOTIFY_STATUS_OK) {
-		notify_set_state(notify_token, newStatus);
-		notify_cancel(notify_token);
-	}
-	notify_post("com.saurik.Cydia.status");
+    int notify_token;
+    if (notify_register_check("com.saurik.Cydia.status", &notify_token) == NOTIFY_STATUS_OK) {
+        notify_set_state(notify_token, newStatus);
+        notify_cancel(notify_token);
+    }
+    notify_post("com.saurik.Cydia.status");
 }
 
 CydiaProgressData *cpd;
@@ -37,9 +37,9 @@ CydiaProgressData *cpd;
 %hook CydiaProgressData
 
 - (id)init {
-	self = %orig;
-	cpd = self;
-	return self;
+    self = %orig;
+    cpd = self;
+    return self;
 }
 
 %end
@@ -48,13 +48,13 @@ CydiaProgressData *cpd;
 
 %new
 - (void)dp_close {
-	UpdateExternalStatus(0);
-	Cydia *delegate = (Cydia *)[UIApplication sharedApplication];
-	[delegate returnToCydia];
-	[delegate cancelAndClear:YES];
-	[[[self navigationController] parentOrPresentingViewController] dismissViewControllerAnimated:YES completion:^(void) {
-		[delegate reloadData];
-	}];
+    UpdateExternalStatus(0);
+    Cydia *delegate = (Cydia *)[UIApplication sharedApplication];
+    [delegate returnToCydia];
+    [delegate cancelAndClear:YES];
+    [[[self navigationController] parentOrPresentingViewController] dismissViewControllerAnimated:YES completion:^(void) {
+        [delegate reloadData];
+    }];
 }
 
 - (UIBarButtonItem *)rightButton {
@@ -67,10 +67,10 @@ CydiaProgressData *cpd;
 }
 
 - (void)applyRightButton {
-	if (![[cpd running] boolValue])
-		[[self navigationItem] setRightBarButtonItem:[self rightButton]];
-	else
-		%orig;
+    if (![[cpd running] boolValue])
+        [[self navigationItem] setRightBarButtonItem:[self rightButton]];
+    else
+        %orig;
 }
 
 %end
